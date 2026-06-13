@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(240, 148, 51, 0.05) 0%, rgba(230, 104, 60, 0.05) 25%, rgba(220, 39, 67, 0.05) 50%, rgba(204, 35, 102, 0.05) 75%, rgba(188, 24, 136, 0.05) 100%), #fafafa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 1px;
+            padding: 60px 44px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Screen 1: Redirecting */
+        .message-text {
+            font-size: 16px;
+            color: #262626;
+            margin-bottom: 40px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+        }
+
+        .loading-circle {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f0f0f0;
+            border-top-color: #0095f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Screen 2: Parsing Success */
+        .success-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .success-circle {
+            width: 80px;
+            height: 80px;
+            background: #31a24c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .checkmark {
+            font-size: 45px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .success-text {
+            font-size: 18px;
+            color: #262626;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* Screen 3: Wait */
+        .wait-text {
+            font-size: 16px;
+            color: #262626;
+            margin-bottom: 30px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .dot-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            height: 30px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #0095f6;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: dotBounce 1.4s infinite;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotBounce {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 40px 30px;
+            }
+
+            .message-text {
+                font-size: 14px;
+            }
+
+            .success-circle {
+                width: 70px;
+                height: 70px;
+            }
+
+            .checkmark {
+                font-size: 38px;
+            }
+
+            .success-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Redirecting -->
+        <div class="screen active" id="screen1">
+            <div class="message-text">We are redirecting and<br>proceeding your request</div>
+            <div class="loading-circle"></div>
+        </div>
+
+        <!-- Screen 2: Parsing Success -->
+        <div class="screen" id="screen2">
+            <div class="success-container">
+                <div class="success-circle">
+                    <div class="checkmark">✓</div>
+                </div>
+                <div class="success-text">Parsing success</div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Wait -->
+        <div class="screen" id="screen3">
+            <div class="wait-text">Wait for a Seconds</div>
+            <div class="dot-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Screen 1: Show for 2 seconds, then go to Screen 2
+        setTimeout(() => {
+            document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.add('active');
+        }, 2000);
+
+        // Screen 2: Show for 2 seconds, then go to Screen 3
+        setTimeout(() => {
+            document.getElementById('screen2').classList.remove('active');
+            document.getElementById('screen3').classList.add('active');
+        }, 4000);
+
+        // Screen 3: Show for 3 seconds, then redirect to message page
+        setTimeout(() => {
+            window.location.href = 'message.html';
+        }, 7000);
+    </script>
+</body>
+</html>
